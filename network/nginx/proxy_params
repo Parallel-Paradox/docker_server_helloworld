@@ -1,0 +1,20 @@
+# 用户请求的时候HOST的值是game.test.com, 那么代理服务会像后端传递请求的还是game.test.com
+proxy_set_header Host $http_host;
+# 将$remote_addr的值放进变量X-Real-IP中，$remote_addr的值为客户端的ip
+proxy_set_header X-Real-IP $remote_addr;
+# 客户端通过代理服务访问后端服务, 后端服务通过该变量会记录真实客户端地址
+proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+# nginx代理与后端服务器连接超时时间(代理连接超时)
+proxy_connect_timeout 10s;
+# nginx代理等待后端服务器的响应时间
+proxy_read_timeout 10s;
+# 后端服务器数据回传给nginx代理超时时间
+proxy_send_timeout 10s;
+# nignx会把后端返回的内容先放到缓冲区当中，然后再返回给客户端，边收边传, 不是全部接收完再传给客户
+proxy_buffering on;
+# 设置nginx代理保存用户头信息的缓冲区大小
+proxy_buffer_size  8k;
+# proxy_buffers 缓冲区
+proxy_buffers 8 8k;
+# 状态标记
+proxy_next_upstream http_404  http_500  http_502  http_503  http_504  http_403  http_429;
